@@ -18,7 +18,10 @@ type App struct {
 
 // New: 作成
 func New(name, version string) *App {
-	cfg := config.New()
+	cfg, err := config.New()
+	if err != nil {
+		log.Fatal("configの初期化に失敗: ", err)
+	}
 
 	return &App{
 		name:    name,

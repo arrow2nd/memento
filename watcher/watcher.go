@@ -8,6 +8,8 @@ import (
 	"sync"
 
 	"github.com/arrow2nd/memento/config"
+	"github.com/arrow2nd/memento/logparser"
+	"github.com/arrow2nd/memento/picture"
 	"github.com/fsnotify/fsnotify"
 )
 
@@ -80,7 +82,26 @@ func (w *Watcher) Start() {
 			// 新しい写真が作成された
 			if w.isVRCPicture(event.Name) {
 				fmt.Println("新しい写真を検出: ", event.Name)
-				// TODO: ここでログの読み取りと写真の移動を行う
+
+				latestWorldVisits, err := logparser.ParseLog(w.config.VRCLogDirPath)
+				if err != nil {
+					log.Println("ログの解析に失敗: ", err)
+					continue
+				}
+
+				log.Println("ワールド訪問履歴を取得: ", latestWorldVisits)
+
+				// 写真をワールド名のディレクトリに移動
+				err = picture.MoveToWorldNameDir(picture.MoveToWorldNameDirOpts{
+					PicturePath:   event.Name,
+					TargetDirPath: filepath.Join(w.config.RootDirPath, w.watchingSubDirName),
+					WorldVisits:   latestWorldVisits,
+				})
+
+				if err != nil {
+					log.Println("写真の移動に失敗: ", err)
+					continue
+				}
 			}
 
 		case err, ok := <-w.watcher.Errors:
