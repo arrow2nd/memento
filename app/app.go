@@ -34,7 +34,7 @@ func (a *App) Run() {
 
 func (a *App) onReady() {
 	systray.SetTitle(a.name)
-	systray.SetTooltip("VRCの画像フォルダを監視中です")
+	systray.SetTooltip("VRCの写真フォルダを監視中です")
 
 	// TODO: アイコンの埋め込みもしたい
 
@@ -54,4 +54,3 @@ func (a *App) onReady() {
 func (a *App) onExit() {
 	log.Println("終了しています")
 }
-

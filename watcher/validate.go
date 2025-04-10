@@ -13,7 +13,7 @@ func isCurrentMonthDir(path string) (string, bool) {
 	return dirName, dirName == getCurrentDate()
 }
 
-// isVRCPicture: VRChatの画像かどうかを判定
+// isVRCPicture: VRChatの写真かどうかを判定
 func (w *Watcher) isVRCPicture(path string) bool {
 	// 親ディレクトリ名を取得
 	dirName := filepath.Base(filepath.Dir(path))
@@ -28,4 +28,3 @@ func (w *Watcher) isVRCPicture(path string) bool {
 
 	return ext == ".png" || ext == ".jpg"
 }
-

@@ -79,8 +79,8 @@ func (w *Watcher) Start() {
 
 			// 新しい写真が作成された
 			if w.isVRCPicture(event.Name) {
-				fmt.Println("新しい画像を検出: ", event.Name)
-				// TODO: ここでログの読み取りと画像の移動を行う
+				fmt.Println("新しい写真を検出: ", event.Name)
+				// TODO: ここでログの読み取りと写真の移動を行う
 			}
 
 		case err, ok := <-w.watcher.Errors:
