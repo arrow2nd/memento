@@ -2,9 +2,10 @@ package picture
 
 import (
 	"fmt"
-	"io"
+	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 // createWorldNameDir: ワールド名のディレクトリを作成
@@ -23,32 +24,46 @@ func createWorldNameDir(targetDirPath, worldName string) error {
 	return nil
 }
 
-// moveFile: ファイルを移動（コピー＆削除）
-func moveFile(srcPath, destPath string) error {
-	// ソースファイルを開く
-	src, err := os.Open(srcPath)
+// isFileLocked: ファイルがロックされているかどうかを確認
+func isFileLocked(filePath string) bool {
+	// 書き込みモードで開く
+	file, err := os.OpenFile(filePath, os.O_WRONLY, 0666)
+
+	// エラーが発生した場合、ファイルがロックされているとみなす
 	if err != nil {
-		return fmt.Errorf("ファイルを開けませんでした: %w", err)
-	}
-	defer src.Close()
-
-	// 移動先ファイルを作成
-	dst, err := os.Create(destPath)
-	if err != nil {
-		return fmt.Errorf("移動先ファイルを作成できませんでした: %w", err)
-	}
-	defer dst.Close()
-
-	// ファイルの内容をコピー
-	if _, err := io.Copy(dst, src); err != nil {
-		return fmt.Errorf("ファイルのコピーに失敗しました: %w", err)
+		return true
 	}
 
-	// 元のファイルを削除
-	if err := os.Remove(srcPath); err != nil {
-		return fmt.Errorf("元のファイルを削除できませんでした: %w", err)
-	}
-
-	return nil
+	file.Close()
+	return false
 }
 
+// moveFile: ファイルを移動（コピー＆削除）
+func moveFile(srcPath, destPath string) error {
+	maxRetries := 3
+	retryDelay := 2 * time.Second
+
+	for i := range maxRetries {
+		if isFileLocked(srcPath) {
+			if i == maxRetries-1 {
+				return fmt.Errorf("ファイルが他のプロセスによってロックされています: %s", srcPath)
+			}
+
+			// リトライ前に少し待機
+			time.Sleep(retryDelay)
+
+			continue
+		}
+
+		// ファイルを移動
+		if err := os.Rename(srcPath, destPath); err != nil {
+			return fmt.Errorf("ファイルの移動に失敗しました: %w", err)
+		}
+
+		log.Println("ファイルを移動しました: ", destPath)
+
+		return nil
+	}
+
+	return fmt.Errorf("最大リトライ回数を超えました")
+}
