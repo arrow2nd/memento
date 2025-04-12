@@ -80,6 +80,8 @@ func New() *App {
 }
 
 func (a *App) Run() {
+	log.Println("起動:", a.version)
+
 	systray.Run(a.onReady, a.onExit)
 }
 
