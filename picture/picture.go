@@ -10,30 +10,29 @@ import (
 type MoveToWorldNameDirOpts struct {
 	PicturePath   string
 	TargetDirPath string
-	WorldVisits   []logparser.WorldVisit
+	WorldVisit    *logparser.WorldVisit
 }
 
 // MoveToWorldNameDir: 写真をワールド名のディレクトリに移動
 func MoveToWorldNameDir(opts MoveToWorldNameDirOpts) error {
 	// 写真の保存日時を取得
-	saveTime, err := getPictureSaveDate(opts.PicturePath)
+	takePictureTime, err := getPictureSaveDate(opts.PicturePath)
 	if err != nil {
 		return fmt.Errorf("写真の保存日時を取得できませんでした: %w", err)
 	}
 
-	// ワールド訪問履歴と照合して、保存日時に最も近いワールド訪問を取得
-	visit, err := findNearestWorldVisit(saveTime, opts.WorldVisits)
-	if err != nil {
-		return fmt.Errorf("写真に最も近いワールド訪問を見つけられませんでした: %w", err)
+	// 撮影日時がワールド訪問日時よりも前なら中断
+	if takePictureTime.Before(opts.WorldVisit.Time) {
+		return fmt.Errorf("写真の撮影日時がワールド訪問日時よりも前です: %s", opts.PicturePath)
 	}
 
 	// ワールド名のディレクトリを作成
-	if err := createWorldNameDir(opts.TargetDirPath, visit.WorldName); err != nil {
+	if err := createWorldNameDir(opts.TargetDirPath, opts.WorldVisit.Name); err != nil {
 		return err
 	}
 
 	// 移動先のパスを生成
-	safeWorldName := convertToSafeDirectoryName(visit.WorldName)
+	safeWorldName := convertToSafeDirectoryName(opts.WorldVisit.Name)
 	worldDirPath := filepath.Join(opts.TargetDirPath, safeWorldName)
 	pictureName := filepath.Base(opts.PicturePath)
 	destPath := filepath.Join(worldDirPath, pictureName)
@@ -45,4 +44,3 @@ func MoveToWorldNameDir(opts MoveToWorldNameDirOpts) error {
 
 	return nil
 }
-

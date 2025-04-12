@@ -1,47 +1,12 @@
 package picture
 
 import (
-	"errors"
 	"fmt"
-	"math"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/arrow2nd/memento/logparser"
 )
-
-// findNearestWorldVisit: 写真の保存日時に最も近いワールド訪問を取得
-func findNearestWorldVisit(pictureTime time.Time, visits []logparser.WorldVisit) (*logparser.WorldVisit, error) {
-	if len(visits) == 0 {
-		return nil, errors.New("ワールド訪問履歴がありません")
-	}
-
-	var nearestVisit *logparser.WorldVisit
-	var minTimeDiff time.Duration = time.Duration(math.MaxInt64)
-
-	for i, visit := range visits {
-		var timeDiff time.Duration
-
-		if pictureTime.After(visit.Time) {
-			timeDiff = pictureTime.Sub(visit.Time)
-		} else {
-			timeDiff = visit.Time.Sub(pictureTime)
-		}
-
-		if timeDiff < minTimeDiff {
-			minTimeDiff = timeDiff
-			nearestVisit = &visits[i]
-		}
-	}
-
-	if nearestVisit == nil {
-		return nil, errors.New("適切なワールド訪問が見つかりませんでした")
-	}
-	return nearestVisit, nil
-}
-
 
 // getPictureSaveDate: 写真の保存日時を取得
 func getPictureSaveDate(path string) (time.Time, error) {

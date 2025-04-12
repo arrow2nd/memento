@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-// ParseLog: 指定されたディレクトリ内の最新のVRChatログファイルを解析し、ワールド訪問履歴を取得する
-func ParseLog(logDirPath string) ([]WorldVisit, error) {
+// FindLatestWorldVisit: ログファイルから直近訪問したワールドを取得する
+func FindLatestWorldVisit(logDirPath string) (*WorldVisit, error) {
 	logFilePath := findRecentLogFilePath(logDirPath)
 	if logFilePath == "" {
 		return nil, errors.New("最新のログファイルが見つかりませんでした")
@@ -17,7 +17,7 @@ func ParseLog(logDirPath string) ([]WorldVisit, error) {
 
 	log.Println("最新のログファイルを取得: ", logFilePath)
 
-	return parseWorldVisitsFromLog(logFilePath)
+	return findLatestWorldVisitFromLog(logFilePath)
 }
 
 // findRecentLogFilePath: 指定されたディレクトリ内の最新のログファイルを探す
@@ -60,4 +60,3 @@ func findRecentLogFilePath(logDirPath string) string {
 
 	return filepath.Join(logDirPath, latestFile.Name())
 }
-

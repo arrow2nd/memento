@@ -83,19 +83,19 @@ func (w *Watcher) Start() {
 			if w.isVRCPicture(event.Name) {
 				fmt.Println("新しい写真を検出: ", event.Name)
 
-				latestWorldVisits, err := logparser.ParseLog(w.config.VRCLogDirPath)
+				latestWorldVisit, err := logparser.FindLatestWorldVisit(w.config.VRCLogDirPath)
 				if err != nil {
 					log.Println("ログの解析に失敗: ", err)
 					continue
 				}
 
-				log.Println("ワールド訪問履歴を取得: ", latestWorldVisits)
+				log.Println("ワールド訪問履歴を取得: ", latestWorldVisit)
 
 				// 写真をワールド名のディレクトリに移動
 				err = picture.MoveToWorldNameDir(picture.MoveToWorldNameDirOpts{
 					PicturePath:   event.Name,
 					TargetDirPath: filepath.Join(w.config.RootDirPath, w.watchingSubDirName),
-					WorldVisits:   latestWorldVisits,
+					WorldVisit:    latestWorldVisit,
 				})
 
 				if err != nil {
