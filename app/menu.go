@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"fyne.io/systray"
+	"github.com/pkg/browser"
 	"github.com/sqweek/dialog"
 )
 
@@ -12,6 +13,7 @@ func (a *App) setupMenu() {
 	mSettings := systray.AddMenuItem("設定", "設定を変更する")
 	mVRCLogDir := mSettings.AddSubMenuItem("ログフォルダを指定", "VRChatのログフォルダを指定する")
 	mVRCPhotoDir := mSettings.AddSubMenuItem("写真フォルダを指定", "VRChatの写真フォルダを指定する")
+	mAbout := systray.AddMenuItem("About", "アプリについて")
 
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("終了", "アプリを終了する")
@@ -20,6 +22,8 @@ func (a *App) setupMenu() {
 	go func() {
 		for {
 			select {
+			case <-mAbout.ClickedCh:
+				browser.OpenURL("https://github.com/arrow2nd/memento")
 			case <-mVRCLogDir.ClickedCh:
 				a.UpdateVRCLogDir()
 			case <-mVRCPhotoDir.ClickedCh:
