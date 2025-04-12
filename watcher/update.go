@@ -33,14 +33,14 @@ func (w *Watcher) addWatchDir(paths ...string) error {
 
 // updateWatchingSubDir: 監視対象のサブディレクトリを更新
 func (w *Watcher) updateWatchingSubDir(newDirName string) error {
-	newDirPath := filepath.Join(w.config.RootDirPath, newDirName)
+	newDirPath := filepath.Join(w.config.PictureDirPath, newDirName)
 
 	// 監視対象に追加
 	if err := w.addWatchDir(newDirPath); err != nil {
 		return err
 	}
 
-	oldWatchingSubDirPath := filepath.Join(w.config.RootDirPath, w.watchingSubDirName)
+	oldWatchingSubDirPath := filepath.Join(w.config.PictureDirPath, w.watchingSubDirName)
 
 	// 監視対象のディレクトリが変更されていないなら、削除処理をスキップ
 	if oldWatchingSubDirPath == newDirPath {

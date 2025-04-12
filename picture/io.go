@@ -16,7 +16,7 @@ func createWorldNameDir(targetDirPath, worldName string) error {
 
 	// TargetDirPath以下にワールド名のディレクトリを作成
 	if _, err := os.Stat(worldDirPath); os.IsNotExist(err) {
-		if err := os.MkdirAll(worldDirPath, 0755); err != nil {
+		if err := os.MkdirAll(worldDirPath, os.ModePerm); err != nil {
 			return fmt.Errorf("ワールド名のディレクトリを作成できませんでした: %w", err)
 		}
 	}

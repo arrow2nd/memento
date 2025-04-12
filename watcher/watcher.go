@@ -40,10 +40,10 @@ func (w *Watcher) Start() {
 	defer w.watcherMutex.Unlock()
 	defer w.watcher.Close()
 
-	subDirPath := filepath.Join(w.config.RootDirPath, w.watchingSubDirName)
+	subDirPath := filepath.Join(w.config.PictureDirPath, w.watchingSubDirName)
 
 	// 監視対象に追加
-	err := w.addWatchDir(w.config.RootDirPath, subDirPath)
+	err := w.addWatchDir(w.config.PictureDirPath, subDirPath)
 	if err != nil {
 		log.Fatal("監視対象の追加に失敗: ", err)
 	}
@@ -94,7 +94,7 @@ func (w *Watcher) Start() {
 				// 写真をワールド名のディレクトリに移動
 				err = picture.MoveToWorldNameDir(picture.MoveToWorldNameDirOpts{
 					PicturePath:   event.Name,
-					TargetDirPath: filepath.Join(w.config.RootDirPath, w.watchingSubDirName),
+					TargetDirPath: filepath.Join(w.config.PictureDirPath, w.watchingSubDirName),
 					WorldVisit:    latestWorldVisit,
 				})
 

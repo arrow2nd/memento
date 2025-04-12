@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 
 	"fyne.io/systray"
@@ -18,7 +19,7 @@ type App struct {
 
 // New: 作成
 func New(name, version string) *App {
-	cfg, err := config.New()
+	cfg, err := config.New(name)
 	if err != nil {
 		log.Fatal("configの初期化に失敗: ", err)
 	}
@@ -37,23 +38,28 @@ func (a *App) Run() {
 
 func (a *App) onReady() {
 	systray.SetTitle(a.name)
-	systray.SetTooltip("VRCの写真フォルダを監視中です")
+	a.updateTooltip()
 
 	// TODO: アイコンの埋め込みもしたい
 
-	// メニューアイテムの設定
-	mQuit := systray.AddMenuItem("終了", "アプリを終了する")
+	// メニューの設定
+	a.setupMenu()
 
 	// 監視を開始
 	go a.watcher.Start()
-
-	// 終了イベントをハンドリング
-	go func() {
-		<-mQuit.ClickedCh
-		systray.Quit()
-	}()
 }
 
 func (a *App) onExit() {
 	log.Println("終了しています")
+}
+
+// updateTooltip: ツールチップを更新
+func (a *App) updateTooltip() {
+	tooltip := fmt.Sprint(
+		fmt.Sprintf("%s v.%s\n", a.name, a.version),
+		fmt.Sprintf("写真フォルダ: %s\n", a.config.PictureDirPath),
+		fmt.Sprintf("ログフォルダ: %s", a.config.VRCLogDirPath),
+	)
+
+	systray.SetTooltip(tooltip)
 }
