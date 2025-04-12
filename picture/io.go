@@ -38,7 +38,7 @@ func isFileLocked(filePath string) bool {
 	return false
 }
 
-// moveFile: ファイルを移動（コピー＆削除）
+// moveFile: ファイルを移動
 func moveFile(srcPath, destPath string) error {
 	maxRetries := 3
 	retryDelay := 2 * time.Second
@@ -57,10 +57,10 @@ func moveFile(srcPath, destPath string) error {
 
 		// ファイルを移動
 		if err := os.Rename(srcPath, destPath); err != nil {
-			return fmt.Errorf("ファイルの移動に失敗しました: %w", err)
+			return fmt.Errorf("ファイルの移動に失敗: %w", err)
 		}
 
-		log.Println("ファイルを移動しました: ", destPath)
+		log.Println("ファイルを移動: ", destPath)
 
 		return nil
 	}

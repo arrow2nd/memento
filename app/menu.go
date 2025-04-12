@@ -48,7 +48,7 @@ func (a *App) UpdateVRCLogDir() {
 		return
 	}
 
-	log.Println("ログフォルダを設定しました:", dir)
+	log.Println("ログフォルダの設定を更新:", dir)
 }
 
 // UpdateVRCPictureDir: VRChatの写真フォルダを選択して更新する
@@ -64,6 +64,5 @@ func (a *App) UpdateVRCPictureDir() {
 		return
 	}
 
-	log.Println("写真フォルダを設定しました:", dir)
+	log.Println("写真フォルダを設定を更新:", dir)
 }
-

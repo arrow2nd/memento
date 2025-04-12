@@ -12,7 +12,7 @@ import (
 func FindLatestWorldVisit(logDirPath string) (*WorldVisit, error) {
 	logFilePath := findRecentLogFilePath(logDirPath)
 	if logFilePath == "" {
-		return nil, errors.New("最新のログファイルが見つかりませんでした")
+		return nil, errors.New("最新のログファイルが見つかりません")
 	}
 
 	log.Println("最新のログファイルを取得: ", logFilePath)

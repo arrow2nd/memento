@@ -11,7 +11,7 @@ func (w *Watcher) addWatchDir(paths ...string) error {
 	for _, p := range paths {
 		// 存在しないならスキップ
 		if _, err := os.Stat(p); os.IsNotExist(err) {
-			log.Println("監視対象のディレクトリが存在しません: ", p)
+			log.Println("ディレクトリが存在しないため監視対象への追加をスキッ: ", p)
 			continue
 		}
 

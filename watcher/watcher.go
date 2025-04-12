@@ -1,7 +1,6 @@
 package watcher
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -87,7 +86,7 @@ func (w *Watcher) Start() {
 
 			// 新しい写真が作成された
 			if w.isVRCPicture(event.Name) {
-				fmt.Println("新しい写真を検出: ", event.Name)
+				log.Println("新しい写真を検出: ", event.Name)
 
 				latestWorldVisit, err := logparser.FindLatestWorldVisit(w.config.VRCLogDirPath)
 				if err != nil {

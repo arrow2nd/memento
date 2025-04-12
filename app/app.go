@@ -7,6 +7,7 @@ import (
 
 	"fyne.io/systray"
 	"github.com/arrow2nd/memento/config"
+	"github.com/arrow2nd/memento/logger"
 	"github.com/arrow2nd/memento/watcher"
 	"github.com/sqweek/dialog"
 )
@@ -27,8 +28,10 @@ type App struct {
 	watcher *watcher.Watcher
 }
 
-// New: 作成
 func New() *App {
+	// ロガーを初期化
+	log.SetOutput(logger.Setup(appName))
+
 	cfg, err := config.New(appName)
 	if err != nil {
 		dialog.Message("設定を取得できませんでした").Title("エラー").Error()
@@ -85,15 +88,11 @@ func (a *App) onReady() {
 	systray.SetTitle(a.name)
 	systray.SetTooltip(fmt.Sprintf("%s v.%s", a.name, a.version))
 
-	// TODO: アイコンの埋め込みもしたい
-
-	// メニューの設定
 	a.setupMenu()
 
-	// 監視を開始
 	go a.watcher.Start()
 }
 
 func (a *App) onExit() {
-	log.Println("終了しています")
+	log.Println("アプリケーションを終了")
 }

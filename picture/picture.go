@@ -15,15 +15,15 @@ type MoveToWorldNameDirOpts struct {
 
 // MoveToWorldNameDir: 写真をワールド名のディレクトリに移動
 func MoveToWorldNameDir(opts MoveToWorldNameDirOpts) error {
-	// 写真の保存日時を取得
+	// 撮影日時を取得
 	takePictureTime, err := getPictureSaveDate(opts.PicturePath)
 	if err != nil {
-		return fmt.Errorf("写真の保存日時を取得できませんでした: %w", err)
+		return fmt.Errorf("撮影日時の取得に失敗: %w", err)
 	}
 
 	// 撮影日時がワールド訪問日時よりも前なら中断
 	if takePictureTime.Before(opts.WorldVisit.Time) {
-		return fmt.Errorf("写真の撮影日時がワールド訪問日時よりも前です: %s", opts.PicturePath)
+		return fmt.Errorf("撮影日時がワールド訪問日時以前のためスキップ: %s", opts.PicturePath)
 	}
 
 	// ワールド名のディレクトリを作成
