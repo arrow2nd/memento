@@ -1,6 +1,7 @@
 package app
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 
@@ -9,6 +10,9 @@ import (
 	"github.com/arrow2nd/memento/watcher"
 	"github.com/sqweek/dialog"
 )
+
+//go:embed trayicon.png
+var trayIcon []byte
 
 // App: アプリケーション
 type App struct {
@@ -72,6 +76,7 @@ func (a *App) Run() {
 }
 
 func (a *App) onReady() {
+	systray.SetIcon(trayIcon)
 	systray.SetTitle(a.name)
 	systray.SetTooltip(fmt.Sprintf("%s v.%s", a.name, a.version))
 
