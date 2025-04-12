@@ -16,7 +16,7 @@
 Windows環境を想定しています。
 
 ```sh
-go build -tags prod -ldflags "-H=windowsgui"
+go build -tags prod -ldflags="-H=windowsgui -s -w -X github.com/arrow2nd/memento/app.appVersion=v.x.x.x" -o "dist/memento_v.x.x.x.exe"
 ```
 
 ### アプリアイコンの埋め込み
