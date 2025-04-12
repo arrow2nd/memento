@@ -73,7 +73,7 @@ func (a *App) Run() {
 
 func (a *App) onReady() {
 	systray.SetTitle(a.name)
-	a.updateTooltip()
+	systray.SetTooltip(fmt.Sprintf("%s v.%s", a.name, a.version))
 
 	// TODO: アイコンの埋め込みもしたい
 
@@ -86,15 +86,4 @@ func (a *App) onReady() {
 
 func (a *App) onExit() {
 	log.Println("終了しています")
-}
-
-// updateTooltip: ツールチップを更新
-func (a *App) updateTooltip() {
-	tooltip := fmt.Sprint(
-		fmt.Sprintf("%s v.%s\n", a.name, a.version),
-		fmt.Sprintf("写真フォルダ: %s\n", a.config.PictureDirPath),
-		fmt.Sprintf("ログフォルダ: %s", a.config.VRCLogDirPath),
-	)
-
-	systray.SetTooltip(tooltip)
 }

@@ -42,29 +42,12 @@ func New(appName string) (*Config, error) {
 	// デフォルト値を設定
 	config := &Config{
 		PictureDirPath: getDefaultWatchDirPath(homeDir),
-		VRCLogDirPath:  getDefaultVRCLogDirPath(configDir),
+		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
 		configPath:     configPath,
 	}
 
 	// 保存
 	return config, config.Save()
-}
-
-// CheckDirectoriesExist: 設定されたディレクトリが存在するか確認する
-func (c *Config) CheckDirectoriesExist() (bool, bool) {
-	pictureExists, logExists := true, true
-
-	// 写真ディレクトリの存在確認
-	if _, err := os.Stat(c.PictureDirPath); err != nil {
-		pictureExists = false
-	}
-
-	// ログディレクトリの存在確認
-	if _, err := os.Stat(c.VRCLogDirPath); err != nil {
-		logExists = false
-	}
-
-	return pictureExists, logExists
 }
 
 func getDefaultWatchDirPath(baseDir string) string {

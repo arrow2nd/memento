@@ -44,6 +44,23 @@ func (c *Config) Save() error {
 	return nil
 }
 
+// CheckDirectoriesExist: 設定されたディレクトリが存在するか確認する
+func (c *Config) CheckDirectoriesExist() (bool, bool) {
+	pictureExists, logExists := true, true
+
+	// 写真ディレクトリの存在確認
+	if _, err := os.Stat(c.PictureDirPath); err != nil {
+		pictureExists = false
+	}
+
+	// ログディレクトリの存在確認
+	if _, err := os.Stat(c.VRCLogDirPath); err != nil {
+		logExists = false
+	}
+
+	return pictureExists, logExists
+}
+
 // SetRootDirPath: 監視対象のルートディレクトリのパスを設定
 func (c *Config) SetRootDirPath(path string) error {
 	c.PictureDirPath = path
