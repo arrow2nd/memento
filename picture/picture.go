@@ -2,6 +2,8 @@ package picture
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/arrow2nd/memento/logparser"
@@ -38,8 +40,25 @@ func MoveToWorldNameDir(opts MoveToWorldNameDirOpts) error {
 	destPath := filepath.Join(worldDirPath, pictureName)
 
 	// ファイルを移動
-	if err := moveFile(opts.PicturePath, destPath); err != nil {
-		return err
+	if err := os.Rename(opts.PicturePath, destPath); err != nil {
+		return fmt.Errorf("ファイルの移動に失敗: %w", err)
+	}
+
+	log.Println("ファイルを移動:", destPath)
+	return nil
+}
+
+// createWorldNameDir: ワールド名のディレクトリを作成
+func createWorldNameDir(targetDirPath, worldName string) error {
+	// ワールド名をディレクトリ名に使用可能な形に変換
+	safeWorldName := convertToSafeDirectoryName(worldName)
+	worldDirPath := filepath.Join(targetDirPath, safeWorldName)
+
+	// TargetDirPath以下にワールド名のディレクトリを作成
+	if _, err := os.Stat(worldDirPath); os.IsNotExist(err) {
+		if err := os.MkdirAll(worldDirPath, os.ModePerm); err != nil {
+			return fmt.Errorf("ワールド名のディレクトリを作成できませんでした: %w", err)
+		}
 	}
 
 	return nil
