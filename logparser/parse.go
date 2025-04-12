@@ -40,10 +40,7 @@ func findLatestWorldVisitFromLog(logPath string) (*WorldVisit, error) {
 
 	// 後ろから読む
 	for pos := fileSize; pos > 0 && latestVisit == nil; {
-		readSize := maxLineSize
-		if pos < readSize {
-			readSize = pos
-		}
+		readSize := min(pos, maxLineSize)
 
 		startPos := pos - readSize
 		buffer := make([]byte, readSize)
