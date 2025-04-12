@@ -11,7 +11,7 @@ import (
 	"github.com/sqweek/dialog"
 )
 
-//go:embed trayicon.png
+//go:embed trayicon.ico
 var trayIcon []byte
 
 // App: アプリケーション
