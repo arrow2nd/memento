@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: write
@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: memento_${GITHUB_REF#refs/tags/}
-          path: dist/memento_${GITHUB_REF#refs/tags/}.exe
+          path: dist/memento_${GITHUB_REF#refs/tags/}
 
   release:
     name: Release
@@ -53,16 +53,15 @@ jobs:
 
       - name: Create Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "Creating release for tag: $TAG_NAME"
-          
-          # 各ファイルへのパスを取得
-          ASSETS=()
-          for asset in dist/*/* ; do
-            ASSETS+=("-a" "$asset")
-          done
-          
+
           # リリースの作成
-          hub release create "${ASSETS[@]}" -m "$TAG_NAME" "$TAG_NAME"
+          gh release create "$TAG_NAME" --title "$TAG_NAME"
+
+          # 各ファイルをアップロード
+          for asset in dist/*/* ; do
+            gh release upload "$TAG_NAME" "$asset"
+          done
