@@ -86,7 +86,7 @@ func (a *App) Run() {
 func (a *App) onReady() {
 	systray.SetIcon(trayIcon)
 	systray.SetTitle(a.name)
-	systray.SetTooltip(fmt.Sprintf("%s v.%s", a.name, a.version))
+	systray.SetTooltip(fmt.Sprintf("%s %s", a.name, a.version))
 
 	a.setupMenu()
 
