@@ -29,7 +29,7 @@ jobs:
           GOARCH: amd64
           CGO_ENABLED: 1
         run: |
-          go build -tags prod -ldflags="-H=windowsgui -s -w -X main.version=${{ github.ref_name }}" -o "dist/memento_${{ github.ref_name }}.exe"
+          go build -tags prod -ldflags="-H=windowsgui -s -w -X github.com/arrow2nd/memento/app.appVersion=${{ github.ref_name }}" -o "dist/memento_${{ github.ref_name }}.exe"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
