@@ -16,7 +16,7 @@
 Windows環境を想定しています。
 
 ```sh
-go build -ldflags "-H=windowsgui"
+go build -tags prod -ldflags "-H=windowsgui"
 ```
 
 ### アプリアイコンの埋め込み
