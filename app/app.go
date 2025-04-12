@@ -11,6 +11,11 @@ import (
 	"github.com/sqweek/dialog"
 )
 
+var (
+	appName    = "memento"
+	appVersion = "develop"
+)
+
 //go:embed trayicon.ico
 var trayIcon []byte
 
@@ -23,16 +28,16 @@ type App struct {
 }
 
 // New: 作成
-func New(name, version string) *App {
-	cfg, err := config.New(name)
+func New() *App {
+	cfg, err := config.New(appName)
 	if err != nil {
 		dialog.Message("設定を取得できませんでした").Title("エラー").Error()
 		log.Fatal("configの初期化に失敗: ", err)
 	}
 
 	app := &App{
-		name:    name,
-		version: version,
+		name:    appName,
+		version: appVersion,
 		config:  cfg,
 	}
 
