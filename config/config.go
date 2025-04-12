@@ -32,7 +32,7 @@ func New(appName string) (*Config, error) {
 	}
 
 	configPath := filepath.Join(configDir, appName, configFileName)
-	log.Println("設定ファイルのパス:", configPath)
+	log.Println("設定ファイル:", configPath)
 
 	// 設定ファイルがあれば読み込む
 	if _, err := os.Stat(configPath); err == nil {

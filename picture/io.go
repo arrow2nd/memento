@@ -60,7 +60,7 @@ func moveFile(srcPath, destPath string) error {
 			return fmt.Errorf("ファイルの移動に失敗: %w", err)
 		}
 
-		log.Println("ファイルを移動: ", destPath)
+		log.Println("ファイルを移動:", destPath)
 
 		return nil
 	}

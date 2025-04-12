@@ -27,7 +27,9 @@ func (a *App) setupMenu() {
 			case <-mVRCLogDir.ClickedCh:
 				a.UpdateVRCLogDir()
 			case <-mVRCPhotoDir.ClickedCh:
-				a.UpdateVRCPictureDir()
+				if a.UpdateVRCPictureDir() {
+					(*a.watcher).Setup()
+				}
 			case <-mQuit.ClickedCh:
 				systray.Quit()
 			}
@@ -52,17 +54,19 @@ func (a *App) UpdateVRCLogDir() {
 }
 
 // UpdateVRCPictureDir: VRChatの写真フォルダを選択して更新する
-func (a *App) UpdateVRCPictureDir() {
+func (a *App) UpdateVRCPictureDir() bool {
 	dir, err := dialog.Directory().SetStartDir(a.config.PictureDirPath).Title("VRChatの写真フォルダを指定").Browse()
 	if err != nil {
 		log.Println("写真フォルダの選択に失敗:", err)
-		return
+		return false
 	}
 
 	if err := a.config.SetRootDirPath(dir); err != nil {
 		log.Println("写真フォルダの設定に失敗:", err)
-		return
+		return false
 	}
 
 	log.Println("写真フォルダを設定を更新:", dir)
+
+	return true
 }

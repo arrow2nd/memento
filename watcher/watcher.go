@@ -40,14 +40,8 @@ func (w *Watcher) Start() {
 	defer w.watcherMutex.Unlock()
 	defer w.watcher.Close()
 
-	subDirPath := filepath.Join(w.config.PictureDirPath, w.watchingSubDirName)
-
-	// 監視対象に追加
-	err := w.addWatchDir(w.config.PictureDirPath, subDirPath)
-	if err != nil {
-		dialog.Message("フォルダの監視を開始できませんでした").Title("エラー").Error()
-		log.Fatal("監視対象の追加に失敗: ", err)
-	}
+	// 監視対象の設定
+	w.Setup()
 
 	for {
 		select {
@@ -69,14 +63,14 @@ func (w *Watcher) Start() {
 			// 新しいディレクトリが作成された
 			if fi.IsDir() {
 				if newDirName, ok := isCurrentMonthDir(event.Name); ok {
-					log.Println("新しいディレクトリを検出: ", event.Name)
+					log.Println("新しいディレクトリを検出:", event.Name)
 
 					if err := w.updateWatchingSubDir(newDirName); err != nil {
 						dialog.Message("%s\n%s",
 							"監視するフォルダの更新に失敗しました。",
 							"アプリを再起動してください。",
 						).Title("エラー").Error()
-						log.Println("監視対象の更新に失敗: ", err)
+						log.Println("監視対象の更新に失敗:", err)
 						continue
 					}
 				}
@@ -86,15 +80,15 @@ func (w *Watcher) Start() {
 
 			// 新しい写真が作成された
 			if w.isVRCPicture(event.Name) {
-				log.Println("新しい写真を検出: ", event.Name)
+				log.Println("新しい写真を検出:", event.Name)
 
 				latestWorldVisit, err := logparser.FindLatestWorldVisit(w.config.VRCLogDirPath)
 				if err != nil {
-					log.Println("ログの解析に失敗: ", err)
+					log.Println("ログの解析に失敗:", err)
 					continue
 				}
 
-				log.Println("ワールド訪問履歴を取得: ", latestWorldVisit)
+				log.Println("ワールド訪問履歴を取得:", latestWorldVisit)
 
 				// 写真をワールド名のディレクトリに移動
 				err = picture.MoveToWorldNameDir(picture.MoveToWorldNameDirOpts{
@@ -104,7 +98,7 @@ func (w *Watcher) Start() {
 				})
 
 				if err != nil {
-					log.Println("写真の移動に失敗: ", err)
+					log.Println("写真の移動に失敗:", err)
 					continue
 				}
 			}
@@ -114,7 +108,7 @@ func (w *Watcher) Start() {
 				return
 			}
 
-			log.Println("監視エラー: ", err)
+			log.Println("監視エラー:", err)
 		}
 	}
 }

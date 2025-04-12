@@ -35,7 +35,7 @@ func New() *App {
 	cfg, err := config.New(appName)
 	if err != nil {
 		dialog.Message("設定を取得できませんでした").Title("エラー").Error()
-		log.Fatal("configの初期化に失敗: ", err)
+		log.Fatal("configの初期化に失敗:", err)
 	}
 
 	app := &App{
@@ -71,7 +71,7 @@ func New() *App {
 	watcher, err := watcher.New(cfg)
 	if err != nil {
 		dialog.Message("監視を開始できませんでした").Title("エラー").Error()
-		log.Fatal("watcherの初期化に失敗: ", err)
+		log.Fatal("watcherの初期化に失敗:", err)
 	}
 
 	app.watcher = watcher

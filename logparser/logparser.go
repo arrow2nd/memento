@@ -15,7 +15,7 @@ func FindLatestWorldVisit(logDirPath string) (*WorldVisit, error) {
 		return nil, errors.New("最新のログファイルが見つかりません")
 	}
 
-	log.Println("最新のログファイルを取得: ", logFilePath)
+	log.Println("最新のログファイルを取得:", logFilePath)
 
 	return findLatestWorldVisitFromLog(logFilePath)
 }

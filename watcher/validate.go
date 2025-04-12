@@ -20,7 +20,7 @@ func (w *Watcher) isVRCPicture(path string) bool {
 
 	// 監視対象のディレクトリ配下でないなら無視
 	if dirName != w.watchingSubDirName {
-		log.Println("監視対象外なのでスキップ: ", dirName)
+		log.Println("監視対象外なのでスキップ:", dirName)
 		return false
 	}
 
