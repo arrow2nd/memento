@@ -37,4 +37,3 @@ func getVRCLogDirPath(homeDir string) string {
 	// TODO: 後で任意のディレクトリに変更できるようにする
 	return filepath.Join(homeDir, "Documents", "VRChat")
 }
-

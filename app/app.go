@@ -3,7 +3,9 @@ package app
 import (
 	"log"
 
-	"fyne.io/systray"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/driver/desktop"
 	"github.com/arrow2nd/memento/config"
 	"github.com/arrow2nd/memento/watcher"
 )
@@ -13,6 +15,7 @@ type App struct {
 	name    string
 	version string
 	config  *config.Config
+	window  *fyne.Window
 	watcher *watcher.Watcher
 }
 
@@ -27,33 +30,23 @@ func New(name, version string) *App {
 		name:    name,
 		version: version,
 		config:  cfg,
+		window:  nil,
 		watcher: watcher.New(cfg),
 	}
 }
 
+// Run: 実行
 func (a *App) Run() {
-	systray.Run(a.onReady, a.onExit)
-}
+	app := app.New()
+	a.window = a.configureWindow(&app)
 
-func (a *App) onReady() {
-	systray.SetTitle(a.name)
-	systray.SetTooltip("VRCの写真フォルダを監視中です")
-
-	// TODO: アイコンの埋め込みもしたい
-
-	// メニューアイテムの設定
-	mQuit := systray.AddMenuItem("終了", "アプリを終了する")
+	// デスクトップアプリケーションとして動作しているか確認
+	if desk, ok := app.(desktop.App); ok {
+		a.configureSystemTray(desk)
+	}
 
 	// 監視を開始
 	go a.watcher.Start()
 
-	// 終了イベントをハンドリング
-	go func() {
-		<-mQuit.ClickedCh
-		systray.Quit()
-	}()
-}
-
-func (a *App) onExit() {
-	log.Println("終了しています")
+	app.Run()
 }
