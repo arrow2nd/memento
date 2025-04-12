@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          CGO_ENABLED: 1
+        run: |
+          go build -ldflags="-H=windowsgui -s -w -X main.version=${GITHUB_REF#refs/tags/}" -o "dist/memento_${GITHUB_REF#refs/tags/}.exe"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: memento_${GITHUB_REF#refs/tags/}
+          path: dist/memento_${GITHUB_REF#refs/tags/}.exe
+
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: false
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "Creating release for tag: $TAG_NAME"
+          
+          # 各ファイルへのパスを取得
+          ASSETS=()
+          for asset in dist/*/* ; do
+            ASSETS+=("-a" "$asset")
+          done
+          
+          # リリースの作成
+          hub release create "${ASSETS[@]}" -m "$TAG_NAME" "$TAG_NAME"
