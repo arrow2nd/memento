@@ -66,7 +66,7 @@ func (a *App) UpdateVRCPictureDir() bool {
 		return false
 	}
 
-	log.Println("写真フォルダを設定を更新:", dir)
+	log.Println("写真フォルダの設定を更新:", dir)
 
 	return true
 }
