@@ -21,9 +21,9 @@ func (a *App) setupMenu() {
 		for {
 			select {
 			case <-mVRCLogDir.ClickedCh:
-				a.onVRCLogDirClick()
+				a.UpdateVRCLogDir()
 			case <-mVRCPhotoDir.ClickedCh:
-				a.onVRCPhotoDirClick()
+				a.UpdateVRCPictureDir()
 			case <-mQuit.ClickedCh:
 				systray.Quit()
 			}
@@ -31,8 +31,8 @@ func (a *App) setupMenu() {
 	}()
 }
 
-// onVRCLogDirClick: VRChatのログフォルダを指定する
-func (a *App) onVRCLogDirClick() {
+// UpdateVRCLogDir: VRChatのログフォルダを選択して更新する
+func (a *App) UpdateVRCLogDir() {
 	dir, err := dialog.Directory().SetStartDir(a.config.VRCLogDirPath).Title("VRChatのログフォルダを指定").Browse()
 	if err != nil {
 		log.Println("ログフォルダの選択に失敗:", err)
@@ -48,8 +48,8 @@ func (a *App) onVRCLogDirClick() {
 	a.updateTooltip()
 }
 
-// onVRCPhotoDirClick: VRChatの写真フォルダを指定する
-func (a *App) onVRCPhotoDirClick() {
+// UpdateVRCPictureDir: VRChatの写真フォルダを選択して更新する
+func (a *App) UpdateVRCPictureDir() {
 	dir, err := dialog.Directory().SetStartDir(a.config.PictureDirPath).Title("VRChatの写真フォルダを指定").Browse()
 	if err != nil {
 		log.Println("写真フォルダの選択に失敗:", err)

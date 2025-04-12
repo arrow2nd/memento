@@ -50,12 +50,27 @@ func New(appName string) (*Config, error) {
 	return config, config.Save()
 }
 
+// CheckDirectoriesExist: 設定されたディレクトリが存在するか確認する
+func (c *Config) CheckDirectoriesExist() (bool, bool) {
+	pictureExists, logExists := true, true
+
+	// 写真ディレクトリの存在確認
+	if _, err := os.Stat(c.PictureDirPath); err != nil {
+		pictureExists = false
+	}
+
+	// ログディレクトリの存在確認
+	if _, err := os.Stat(c.VRCLogDirPath); err != nil {
+		logExists = false
+	}
+
+	return pictureExists, logExists
+}
+
 func getDefaultWatchDirPath(baseDir string) string {
-	// TODO: テスト用
 	return filepath.Join(baseDir, "Pictures", "VRChat")
 }
 
 func getDefaultVRCLogDirPath(baseDir string) string {
-	// TODO: テスト用
-	return filepath.Join(baseDir, "Documents", "VRChat")
+	return filepath.Join(baseDir, "AppData", "LocalLow", "VRChat", "VRChat")
 }

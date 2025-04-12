@@ -11,6 +11,7 @@ import (
 	"github.com/arrow2nd/memento/logparser"
 	"github.com/arrow2nd/memento/picture"
 	"github.com/fsnotify/fsnotify"
+	"github.com/sqweek/dialog"
 )
 
 type Watcher struct {
@@ -20,18 +21,18 @@ type Watcher struct {
 	config             *config.Config
 }
 
-// New: 新しいWatcherを作成
-func New(config *config.Config) *Watcher {
+// New: 作成
+func New(config *config.Config) (*Watcher, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal("watcherの作成に失敗: ", err)
+		return nil, err
 	}
 
 	return &Watcher{
 		watcher:            watcher,
 		watchingSubDirName: getCurrentDate(),
 		config:             config,
-	}
+	}, nil
 }
 
 // Start: 監視を開始
@@ -45,6 +46,7 @@ func (w *Watcher) Start() {
 	// 監視対象に追加
 	err := w.addWatchDir(w.config.PictureDirPath, subDirPath)
 	if err != nil {
+		dialog.Message("フォルダの監視を開始できませんでした").Title("エラー").Error()
 		log.Fatal("監視対象の追加に失敗: ", err)
 	}
 
@@ -71,6 +73,10 @@ func (w *Watcher) Start() {
 					log.Println("新しいディレクトリを検出: ", event.Name)
 
 					if err := w.updateWatchingSubDir(newDirName); err != nil {
+						dialog.Message("%s\n%s",
+							"監視するフォルダの更新に失敗しました。",
+							"アプリを再起動してください。",
+						).Title("エラー").Error()
 						log.Println("監視対象の更新に失敗: ", err)
 						continue
 					}

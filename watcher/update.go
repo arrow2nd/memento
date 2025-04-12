@@ -1,7 +1,6 @@
 package watcher
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -10,15 +9,10 @@ import (
 // addWatchDir: 監視対象のディレクトリを追加
 func (w *Watcher) addWatchDir(paths ...string) error {
 	for _, p := range paths {
-		// 存在しないなら作成
+		// 存在しないならスキップ
 		if _, err := os.Stat(p); os.IsNotExist(err) {
 			log.Println("監視対象のディレクトリが存在しません: ", p)
-
-			if err := os.MkdirAll(p, os.ModePerm); err != nil {
-				return fmt.Errorf("ディレクトリの作成に失敗: %w", err)
-			}
-
-			log.Println("監視対象のディレクトリを作成しました: ", p)
+			continue
 		}
 
 		if err := w.watcher.Add(p); err != nil {
