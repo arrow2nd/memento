@@ -23,22 +23,19 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Set environment variables
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
       - name: Build
         env:
           GOOS: windows
           GOARCH: amd64
           CGO_ENABLED: 1
         run: |
-          go build -tags prod -ldflags="-H=windowsgui -s -w -X main.version=${env.VERSION}" -o "dist/memento_${env.VERSION}.exe"
+          go build -tags prod -ldflags="-H=windowsgui -s -w -X main.version=${GITHUB_REF#refs/tags/}" -o "dist/memento_${GITHUB_REF#refs/tags/}.exe"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: memento_${{ env.VERSION }}
-          path: dist/memento_${{ env.VERSION }}
+          name: memento
+          path: dist/
 
   release:
     name: Release
