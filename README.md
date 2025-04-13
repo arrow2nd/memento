@@ -3,7 +3,7 @@
 ![Frame 11](https://github.com/user-attachments/assets/514d65e2-5926-42c8-a7a7-6c2771f55af0)
 ✨️ VRChat内で撮影した写真をワールド別に自動整理するやつ
 
-<a href="https://github.com/arrow2nd/memento/wiki">使い方とか</a>
+<a href="https://github.com/arrow2nd/memento/wiki">使い方とか</a> | <a href="https://github.com/arrow2nd/memento/releases/latest">ダウンロード</a>
 
 </div>
 
