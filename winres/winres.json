@@ -11,10 +11,10 @@
     "#1": {
       "0409": {
         "identity": {
-          "name": "",
+          "name": "memento",
           "version": ""
         },
-        "description": "",
+        "description": "VRChat内で撮影した写真をワールド毎に自動整理するやつ",
         "minimum-os": "win7",
         "execution-level": "as invoker",
         "ui-access": false,
@@ -41,8 +41,8 @@
         },
         "info": {
           "0409": {
-            "Comments": "",
-            "CompanyName": "",
+            "Comments": "VRChat内で撮影した写真をワールド毎に自動整理するやつ",
+            "CompanyName": "arrow2nd",
             "FileDescription": "",
             "FileVersion": "",
             "InternalName": "",
@@ -50,7 +50,7 @@
             "LegalTrademarks": "",
             "OriginalFilename": "",
             "PrivateBuild": "",
-            "ProductName": "",
+            "ProductName": "memento",
             "ProductVersion": "",
             "SpecialBuild": ""
           }
@@ -59,4 +59,3 @@
     }
   }
 }
-
