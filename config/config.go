@@ -15,6 +15,8 @@ type Config struct {
 	PictureDirPath string
 	// VRCLogDirPath: VRChatのログディレクトリのパス
 	VRCLogDirPath string
+	// ConvertToJpeg: JPEGに変換するかどうか
+	ConvertToJpeg bool
 
 	configPath string
 }
@@ -43,6 +45,7 @@ func New(appName string) (*Config, error) {
 	config := &Config{
 		PictureDirPath: getDefaultWatchDirPath(homeDir),
 		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
+		ConvertToJpeg:  false,
 		configPath:     configPath,
 	}
 

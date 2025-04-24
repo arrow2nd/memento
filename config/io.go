@@ -72,3 +72,9 @@ func (c *Config) SetVRCLogDirPath(path string) error {
 	c.VRCLogDirPath = path
 	return c.Save()
 }
+
+// SetConvertToJpeg: JPEG変換の設定を変更
+func (c *Config) SetConvertToJpeg(convert bool) error {
+	c.ConvertToJpeg = convert
+	return c.Save()
+}

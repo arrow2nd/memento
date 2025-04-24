@@ -13,6 +13,7 @@ func (a *App) setupMenu() {
 	mSettings := systray.AddMenuItem("設定", "設定を変更する")
 	mVRCLogDir := mSettings.AddSubMenuItem("ログフォルダを指定", "VRChatのログフォルダを指定する")
 	mVRCPhotoDir := mSettings.AddSubMenuItem("写真フォルダを指定", "VRChatの写真フォルダを指定する")
+	mConvertToJpeg := mSettings.AddSubMenuItemCheckbox("JPEGに変換する", "写真をJPEGに変換しつつ整理する", a.config.ConvertToJpeg)
 	mAbout := systray.AddMenuItem("About", "アプリについて")
 
 	systray.AddSeparator()
@@ -30,6 +31,9 @@ func (a *App) setupMenu() {
 				if a.UpdateVRCPictureDir() {
 					(*a.watcher).Setup()
 				}
+			case <-mConvertToJpeg.ClickedCh:
+				a.UpdateConvertToJpeg()
+
 			case <-mQuit.ClickedCh:
 				systray.Quit()
 			}
@@ -69,4 +73,15 @@ func (a *App) UpdateVRCPictureDir() bool {
 	log.Println("写真フォルダの設定を更新:", dir)
 
 	return true
+}
+
+// UpdateConvertToJpeg: JPEG変換の設定を更新する
+func (a *App) UpdateConvertToJpeg() {
+	if err := a.config.SetConvertToJpeg(!a.config.ConvertToJpeg); err != nil {
+		log.Println("JPEG変換の設定に失敗:", err)
+		return
+	}
+
+	log.Println("JPEG変換の設定を更新:", a.config.ConvertToJpeg)
+
 }
