@@ -55,7 +55,7 @@ func getDefaultConfig() (*Config, error) {
 	return &Config{
 		PictureDirPath: getDefaultWatchDirPath(homeDir),
 		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
-		ConvertToJpeg:  false,
+		ConvertToJpeg:  true,
 		JpegQuality:    90,
 	}, nil
 }
