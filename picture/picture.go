@@ -44,8 +44,10 @@ func MoveToWorldNameDir(opts MoveToWorldNameDirOpts, convertToJpeg bool, jpegQua
 
 	// JPEGに変換する場合
 	if convertToJpeg {
-		if err := encodeJpeg(opts.PicturePath, worldDirPath, jpegQuality); err != nil {
-			return err
+		// JPEG変換とEXIFデータ書き込みを一度に行う
+		_, err := encodeJpegWithExif(opts.PicturePath, worldDirPath, opts.WorldVisit.Name, takePictureTime, jpegQuality)
+		if err != nil {
+			return fmt.Errorf("JPEG変換またはEXIFデータ書き込みに失敗: %w", err)
 		}
 
 		// 移動元の画像を削除
