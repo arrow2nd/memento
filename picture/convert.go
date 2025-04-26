@@ -11,7 +11,7 @@ import (
 )
 
 // encodeJpeg: JPEGにエンコードして保存する
-func encodeJpeg(srcPath, destDirPath string) error {
+func encodeJpeg(srcPath, destDirPath string, quality int) error {
 	// 入力元から出力先のパスを生成
 	fileName := filepath.Base(srcPath)
 	newFileName := strings.Replace(fileName, filepath.Ext(fileName), ".jpg", 1)
@@ -45,7 +45,7 @@ func encodeJpeg(srcPath, destDirPath string) error {
 
 	// JPEGとしてエンコード
 	options := jpeg.Options{
-		Quality: 90,
+		Quality: quality,
 	}
 	if err := jpeg.Encode(out, img, &options); err != nil {
 		return fmt.Errorf("JPEG画像の変換に失敗: %w", err)
@@ -55,4 +55,3 @@ func encodeJpeg(srcPath, destDirPath string) error {
 
 	return nil
 }
-

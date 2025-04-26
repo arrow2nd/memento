@@ -17,6 +17,8 @@ type Config struct {
 	VRCLogDirPath string
 	// ConvertToJpeg: JPEGに変換するかどうか
 	ConvertToJpeg bool
+	// JpegQuality: JPEGの品質設定 (1-100)
+	JpegQuality int
 
 	configPath string
 }
@@ -46,6 +48,7 @@ func New(appName string) (*Config, error) {
 		PictureDirPath: getDefaultWatchDirPath(homeDir),
 		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
 		ConvertToJpeg:  false,
+		JpegQuality:    90,
 		configPath:     configPath,
 	}
 

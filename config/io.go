@@ -78,3 +78,16 @@ func (c *Config) SetConvertToJpeg(convert bool) error {
 	c.ConvertToJpeg = convert
 	return c.Save()
 }
+
+// SetJpegQuality: JPEG品質の設定を変更
+func (c *Config) SetJpegQuality(quality int) error {
+	// 品質は1-100の範囲内に制限
+	if quality < 1 {
+		quality = 1
+	} else if quality > 100 {
+		quality = 100
+	}
+
+	c.JpegQuality = quality
+	return c.Save()
+}

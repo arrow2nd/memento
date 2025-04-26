@@ -15,7 +15,7 @@ type MoveToWorldNameDirOpts struct {
 }
 
 // MoveToWorldNameDir: 写真をワールド名のディレクトリに移動
-func MoveToWorldNameDir(opts MoveToWorldNameDirOpts, convertToJpeg bool) error {
+func MoveToWorldNameDir(opts MoveToWorldNameDirOpts, convertToJpeg bool, jpegQuality int) error {
 	// 撮影日時を取得
 	takePictureTime, err := getPictureSaveDate(opts.PicturePath)
 	if err != nil {
@@ -44,7 +44,7 @@ func MoveToWorldNameDir(opts MoveToWorldNameDirOpts, convertToJpeg bool) error {
 
 	// JPEGに変換する場合
 	if convertToJpeg {
-		if err := encodeJpeg(opts.PicturePath, worldDirPath); err != nil {
+		if err := encodeJpeg(opts.PicturePath, worldDirPath, jpegQuality); err != nil {
 			return err
 		}
 
