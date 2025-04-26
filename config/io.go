@@ -14,14 +14,19 @@ func load(configPath string) (*Config, error) {
 		return nil, fmt.Errorf("設定ファイルの読み込みに失敗: %w", err)
 	}
 
-	var config Config
+	// デフォルト設定
+	config, err := getDefaultConfig()
+	if err != nil {
+		return nil, fmt.Errorf("デフォルト設定の取得に失敗: %w", err)
+	}
+
 	if err := json.Unmarshal(buf, &config); err != nil {
 		return nil, fmt.Errorf("設定ファイルのデコードに失敗: %w", err)
 	}
 
 	config.configPath = configPath
 
-	return &config, nil
+	return config, nil
 }
 
 // Save: 設定を保存する

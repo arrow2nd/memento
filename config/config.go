@@ -25,11 +25,6 @@ type Config struct {
 
 // New: 作成
 func New(appName string) (*Config, error) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, fmt.Errorf("ホームディレクトリの取得に失敗: %w", err)
-	}
-
 	configDir, err := os.UserConfigDir()
 	if err != nil {
 		return nil, fmt.Errorf("Configディレクトリの取得に失敗: %w", err)
@@ -38,22 +33,31 @@ func New(appName string) (*Config, error) {
 	configPath := filepath.Join(configDir, appName, configFileName)
 	log.Println("設定ファイル:", configPath)
 
+	config, err := getDefaultConfig()
+	if err != nil {
+		return nil, fmt.Errorf("デフォルト設定の取得に失敗: %w", err)
+	}
+
 	// 設定ファイルがあれば読み込む
 	if _, err := os.Stat(configPath); err == nil {
 		return load(configPath)
 	}
 
-	// デフォルト値を設定
-	config := &Config{
+	return config, config.Save()
+}
+
+func getDefaultConfig() (*Config, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("ホームディレクトリの取得に失敗: %w", err)
+	}
+
+	return &Config{
 		PictureDirPath: getDefaultWatchDirPath(homeDir),
 		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
 		ConvertToJpeg:  false,
 		JpegQuality:    90,
-		configPath:     configPath,
-	}
-
-	// 保存
-	return config, config.Save()
+	}, nil
 }
 
 func getDefaultWatchDirPath(baseDir string) string {
