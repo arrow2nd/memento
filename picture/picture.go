@@ -3,7 +3,6 @@ package picture
 import (
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 
 	"github.com/arrow2nd/memento/logparser"
@@ -16,7 +15,7 @@ type MoveToWorldNameDirOpts struct {
 }
 
 // MoveToWorldNameDir: 写真をワールド名のディレクトリに移動
-func MoveToWorldNameDir(opts MoveToWorldNameDirOpts) error {
+func MoveToWorldNameDir(opts MoveToWorldNameDirOpts, convertToJpeg bool) error {
 	// 撮影日時を取得
 	takePictureTime, err := getPictureSaveDate(opts.PicturePath)
 	if err != nil {
@@ -33,21 +32,32 @@ func MoveToWorldNameDir(opts MoveToWorldNameDirOpts) error {
 		return err
 	}
 
+	// PNG画像ではない場合はスキップ
+	if filepath.Ext(opts.PicturePath) != ".png" {
+		log.Println("PNG画像ではないためスキップ:", opts.PicturePath)
+		return nil
+	}
+
 	// 移動先のパスを生成
 	safeWorldName := convertToSafeDirectoryName(opts.WorldVisit.Name)
 	worldDirPath := filepath.Join(opts.TargetDirPath, safeWorldName)
-	pictureName := filepath.Base(opts.PicturePath)
-	destPath := filepath.Join(worldDirPath, pictureName)
 
-	// ファイルを移動
-	if err := os.Rename(opts.PicturePath, destPath); err != nil {
-		log.Printf("ファイルの移動に失敗: %v, バックグラウンドでリトライします", err)
+	// JPEGに変換する場合
+	if convertToJpeg {
+		if err := encodeJpeg(opts.PicturePath, worldDirPath); err != nil {
+			return err
+		}
 
-		go retryMoveFile(opts.PicturePath, destPath)
+		// 移動元の画像を削除
+		go removeFileWithRetry(opts.PicturePath)
 
 		return nil
 	}
 
-	log.Println("ファイルを移動:", destPath)
+	// 変換しないなら、そのまま移動する
+	pictureName := filepath.Base(opts.PicturePath)
+	destPath := filepath.Join(worldDirPath, pictureName)
+	go moveFileWithRetry(opts.PicturePath, destPath)
+
 	return nil
 }

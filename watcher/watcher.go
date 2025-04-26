@@ -95,7 +95,7 @@ func (w *Watcher) Start() {
 					PicturePath:   event.Name,
 					TargetDirPath: filepath.Join(w.config.PictureDirPath, w.watchingSubDirName),
 					WorldVisit:    latestWorldVisit,
-				})
+				}, w.config.ConvertToJpeg)
 
 				if err != nil {
 					log.Println("写真の移動に失敗:", err)

@@ -19,4 +19,3 @@ func convertToSafeDirectoryName(worldName string) string {
 
 	return replacer.Replace(worldName)
 }
-
