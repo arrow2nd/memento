@@ -42,23 +42,19 @@ func MoveToWorldNameDir(opts MoveToWorldNameDirOpts, convertToJpeg bool, jpegQua
 	safeWorldName := convertToSafeDirectoryName(opts.WorldVisit.Name)
 	worldDirPath := filepath.Join(opts.TargetDirPath, safeWorldName)
 
-	// JPEGに変換する場合
 	if convertToJpeg {
-		// JPEG変換とEXIFデータ書き込みを一度に行う
-		_, err := encodeJpegWithExif(opts.PicturePath, worldDirPath, opts.WorldVisit.Name, takePictureTime, jpegQuality)
-		if err != nil {
-			return fmt.Errorf("JPEG変換またはEXIFデータ書き込みに失敗: %w", err)
+		// 設定が有効ならJPEGに変換
+		if _, err := encodeJpegWithExif(opts.PicturePath, worldDirPath, opts.WorldVisit.Name, takePictureTime, jpegQuality); err != nil {
+			return fmt.Errorf("ファイルの移動に失敗: %w", err)
 		}
 
-		// 移動元の画像を削除
 		go removeFileWithRetry(opts.PicturePath)
 
 		return nil
 	}
 
-	// 変換しないなら、そのまま移動する
-	pictureName := filepath.Base(opts.PicturePath)
-	destPath := filepath.Join(worldDirPath, pictureName)
+	// PNG画像をそのまま移動
+	destPath := filepath.Join(worldDirPath, filepath.Base(opts.PicturePath))
 	go moveFileWithRetry(opts.PicturePath, destPath)
 
 	return nil
