@@ -9,7 +9,7 @@
   },
   "RT_MANIFEST": {
     "#1": {
-      "0409": {
+      "0411": {
         "identity": {
           "name": "memento",
           "version": ""
@@ -40,7 +40,7 @@
           "product_version": "0.0.0.0"
         },
         "info": {
-          "0409": {
+          "0411": {
             "Comments": "VRChat内で撮影した写真をワールド毎に自動整理するやつ",
             "CompanyName": "arrow2nd",
             "FileDescription": "",
