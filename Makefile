@@ -1,6 +1,6 @@
 APP_NAME := memento
 MODULE := github.com/arrow2nd/memento
-VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "unknown")
+VERSION := $(shell powershell -Command "try { git describe --tags --abbrev=0 } catch { echo 'unknown' }")
 BUILD_TAGS := -tags prod
 BUILD_FLAGS := -ldflags="-H=windowsgui -s -w -X $(MODULE)/app.appVersion=$(VERSION)"
 DIST_DIR := dist
