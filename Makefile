@@ -13,16 +13,26 @@ build:
 	go generate
 
 	@echo "Building $(APP_NAME) $(VERSION)..."
-	@mkdir -p $(RELEASE_DIR)
-	go build $(BUILD_TAGS) $(BUILD_FLAGS) -o "$(RELEASE_DIR)/$(APP_NAME).exe"
+	@if not exist $(subst /,\\,$(RELEASE_DIR)) mkdir $(subst /,\\,$(RELEASE_DIR))
+	@go build $(BUILD_TAGS) $(BUILD_FLAGS) -o "$(RELEASE_DIR)/$(APP_NAME).exe"
 
 .PHONY: release
 release: build
 	@echo "Creating ZIP archive..."
-	cd $(DIST_DIR) && zip -r $(APP_NAME)_$(VERSION).zip $(APP_NAME)_$(VERSION)
+	@powershell -Command "if (Get-Command Compress-Archive -ErrorAction SilentlyContinue) { \
+		Compress-Archive -Path '$(subst /,\\,$(RELEASE_DIR))' -DestinationPath '$(subst /,\\,$(DIST_DIR))/$(APP_NAME)_$(VERSION).zip' -Force; \
+	} else { \
+		echo 'PowerShell Compress-Archive not available, trying 7-Zip...'; \
+		if (Get-Command 7z -ErrorAction SilentlyContinue) { \
+			7z a -tzip '$(subst /,\\,$(DIST_DIR))/$(APP_NAME)_$(VERSION).zip' '$(subst /,\\,$(RELEASE_DIR))'; \
+		} else { \
+			echo 'ERROR: Neither Compress-Archive nor 7z are available. Please install one of them.'; \
+			exit 1; \
+		} \
+	}"
 	@echo "Build completed: $(DIST_DIR)/$(APP_NAME)_$(VERSION).zip"
 
 .PHONY: clean
 clean:
 	@echo "Cleaning build artifacts..."
-	rm -rf $(DIST_DIR)
+	@if exist $(subst /,\\,$(DIST_DIR)) rmdir /S /Q $(subst /,\\,$(DIST_DIR))
