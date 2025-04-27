@@ -4,8 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 
 	"fyne.io/systray"
 	"github.com/arrow2nd/memento/config"
@@ -18,7 +16,6 @@ import (
 var (
 	appName    = "memento"
 	appVersion = "develop"
-	lockFile   *flock.Flock
 )
 
 //go:embed trayicon.ico
@@ -26,10 +23,11 @@ var trayIcon []byte
 
 // App: アプリケーション
 type App struct {
-	name    string
-	version string
-	config  *config.Config
-	watcher *watcher.Watcher
+	name     string
+	version  string
+	config   *config.Config
+	watcher  *watcher.Watcher
+	lockFile *flock.Flock
 }
 
 func New() *App {
@@ -49,37 +47,11 @@ func New() *App {
 		config:  cfg,
 	}
 
-	// 重複起動防止のためのロックファイルを設定
-	lockFilePath := filepath.Join(cfg.ConfigDirPath, appName+".lock")
-	lockFile = flock.New(lockFilePath)
+	// 重複起動防止
+	app.checkAlreadyRunning()
 
-	// 重複起動を防止
-	if app.isAlreadyRunning() {
-		os.Exit(0)
-	}
-
-	// 設定されたディレクトリが存在するか確認
-	pictureDirExists, logDirExists := app.config.CheckDirectoriesExist()
-
-	if !pictureDirExists {
-		dialog.Message("%s\n%s\n\n%s\n%s",
-			"写真フォルダが見つかりませんでした。",
-			"次の画面でVRChatの写真フォルダを選んでください。",
-			"※選ぶのは写真が直接入っているフォルダではなく、その親フォルダです。",
-			"（写真が見える場所より1つ上のフォルダを選んでください）",
-		).Title("写真フォルダの確認").Info()
-
-		app.UpdateVRCPictureDir()
-	}
-
-	if !logDirExists {
-		dialog.Message("%s\n%s",
-			"VRChatのログフォルダが見つかりませんでした。",
-			"次の画面でVRChatのログフォルダを選んでください。",
-		).Title("ログフォルダの確認").Info()
-
-		app.UpdateVRCLogDir()
-	}
+	// 設定されたディレクトリを確認
+	app.checkDirectories()
 
 	// 監視処理の初期化
 	watcher, err := watcher.New(cfg)
@@ -110,29 +82,11 @@ func (a *App) onReady() {
 }
 
 func (a *App) onExit() {
-	if lockFile != nil {
-		err := lockFile.Unlock()
-		if err != nil {
+	if a.lockFile != nil {
+		if err := a.lockFile.Unlock(); err != nil {
 			log.Println("ロックファイルの解放に失敗:", err)
 		}
 	}
 
 	log.Println("アプリケーションを終了")
-}
-
-// isAlreadyRunning: 重複起動チェック
-func (a *App) isAlreadyRunning() bool {
-	locked, err := lockFile.TryLock()
-	if err != nil {
-		log.Println("ロックファイルの作成に失敗:", err)
-		return false
-	}
-
-	if !locked {
-		dialog.Message("%sは既に起動しています！\nタスクトレイを確認してみてください。", a.name).Title("起動エラー").Error()
-		log.Println("既に起動しているため終了")
-		return true
-	}
-
-	return false
 }
