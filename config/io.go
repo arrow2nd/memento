@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 )
 
 // load: 設定を読み込む
@@ -26,9 +25,9 @@ func load(config *Config) (*Config, error) {
 
 // Save: 設定を保存する
 func (c *Config) Save() error {
-	// ディレクトリが存在しない場合は作成
-	if err := os.MkdirAll(filepath.Dir(c.ConfigDirPath), os.ModePerm); err != nil {
-		return fmt.Errorf("設定ファイルのディレクトリ作成に失敗: %w", err)
+	// 設定ディレクトリ自体を作成
+	if err := os.MkdirAll(c.ConfigDirPath, 0755); err != nil {
+		return fmt.Errorf("設定ディレクトリの作成に失敗: %w", err)
 	}
 
 	// JSONにエンコード
@@ -37,7 +36,15 @@ func (c *Config) Save() error {
 		return fmt.Errorf("設定ファイルのエンコードに失敗: %w", err)
 	}
 
-	if err := os.WriteFile(c.configFilePath, data, os.ModePerm); err != nil {
+	// ファイル書き込み
+	// NOTE: os.WriteFile() だと Windows で初回起動時に存在しないパスですって怒られる
+	file, err := os.OpenFile(c.configFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("設定ファイルのオープンに失敗: %w", err)
+	}
+	defer file.Close()
+
+	if _, err := file.Write(data); err != nil {
 		return fmt.Errorf("設定ファイルの書き込みに失敗: %w", err)
 	}
 
