@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -19,51 +18,66 @@ type Config struct {
 	ConvertToJpeg bool
 	// JpegQuality: JPEGの品質設定 (1-100)
 	JpegQuality int
+	// ConfigDirPath: 設定ディレクトリのパス
+	ConfigDirPath string
 
-	configPath string
+	// configFilePath: 設定ファイルのパス
+	configFilePath string
 }
 
 // New: 作成
 func New(appName string) (*Config, error) {
-	configDir, err := os.UserConfigDir()
-	if err != nil {
-		return nil, fmt.Errorf("Configディレクトリの取得に失敗: %w", err)
-	}
-
-	configPath := filepath.Join(configDir, appName, configFileName)
-	log.Println("設定ファイル:", configPath)
-
-	config, err := getDefaultConfig()
+	config, err := getDefaultConfig(appName)
 	if err != nil {
 		return nil, fmt.Errorf("デフォルト設定の取得に失敗: %w", err)
 	}
 
-	// 設定ファイルがあれば読み込む
-	if _, err := os.Stat(configPath); err == nil {
-		return load(configPath)
+	// 設定ファイルがあれば読込む
+	if _, err := os.Stat(config.configFilePath); err == nil {
+		return load(config)
 	}
 
 	return config, config.Save()
 }
 
-func getDefaultConfig() (*Config, error) {
+// getConfigDirPath: 設定ディレクトリのパスを取得
+func getConfigDirPath(appName string) (string, error) {
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(configDir, appName), nil
+}
+
+// getDefaultConfig: デフォルトの設定を取得
+func getDefaultConfig(appName string) (*Config, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return nil, fmt.Errorf("ホームディレクトリの取得に失敗: %w", err)
 	}
 
+	configDir, err := getConfigDirPath(appName)
+	if err != nil {
+		return nil, fmt.Errorf("設定ディレクトリの取得に失敗: %w", err)
+	}
+
 	return &Config{
+		ConfigDirPath:  configDir,
 		PictureDirPath: getDefaultWatchDirPath(homeDir),
 		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
 		ConvertToJpeg:  true,
 		JpegQuality:    90,
+		configFilePath: filepath.Join(configDir, configFileName),
 	}, nil
 }
 
+// getDefaultWatchDirPath: デフォルトの監視ディレクトリのパスを取得
 func getDefaultWatchDirPath(baseDir string) string {
-	return filepath.Join(baseDir, "Pictures", "VRChat")
+	return filepath.Join(baseDir, "Pictures", "VRChat") // OneDrive入ってたらなんか違うかも
 }
 
+// getDefaultVRCLogDirPath: デフォルトのVRChatログディレクトリのパスを取得
 func getDefaultVRCLogDirPath(baseDir string) string {
 	return filepath.Join(baseDir, "AppData", "LocalLow", "VRChat", "VRChat")
 }

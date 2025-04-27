@@ -3,28 +3,23 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 )
 
 // load: 設定を読み込む
-func load(configPath string) (*Config, error) {
-	buf, err := os.ReadFile(configPath)
+func load(config *Config) (*Config, error) {
+	log.Println("設定ファイル読込み:", config.configFilePath)
+
+	buf, err := os.ReadFile(config.configFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("設定ファイルの読み込みに失敗: %w", err)
 	}
 
-	// デフォルト設定
-	config, err := getDefaultConfig()
-	if err != nil {
-		return nil, fmt.Errorf("デフォルト設定の取得に失敗: %w", err)
-	}
-
-	if err := json.Unmarshal(buf, &config); err != nil {
+	if err := json.Unmarshal(buf, config); err != nil {
 		return nil, fmt.Errorf("設定ファイルのデコードに失敗: %w", err)
 	}
-
-	config.configPath = configPath
 
 	return config, nil
 }
@@ -32,7 +27,7 @@ func load(configPath string) (*Config, error) {
 // Save: 設定を保存する
 func (c *Config) Save() error {
 	// ディレクトリが存在しない場合は作成
-	if err := os.MkdirAll(filepath.Dir(c.configPath), os.ModePerm); err != nil {
+	if err := os.MkdirAll(filepath.Dir(c.ConfigDirPath), os.ModePerm); err != nil {
 		return fmt.Errorf("設定ファイルのディレクトリ作成に失敗: %w", err)
 	}
 
@@ -42,7 +37,7 @@ func (c *Config) Save() error {
 		return fmt.Errorf("設定ファイルのエンコードに失敗: %w", err)
 	}
 
-	if err := os.WriteFile(c.configPath, data, os.ModePerm); err != nil {
+	if err := os.WriteFile(c.configFilePath, data, os.ModePerm); err != nil {
 		return fmt.Errorf("設定ファイルの書き込みに失敗: %w", err)
 	}
 

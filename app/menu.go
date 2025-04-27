@@ -10,12 +10,23 @@ import (
 
 // setupMenu: メニューの設定
 func (a *App) setupMenu() {
+	// 設定サブメニュー
 	mSettings := systray.AddMenuItem("設定", "設定を変更する")
+
+	// 機能設定
+	mConvertToJpeg := mSettings.AddSubMenuItemCheckbox("JPEGに変換", "写真をJPEGに変換します。ついでに撮影日時なども書き込みます", a.config.ConvertToJpeg)
+	mSettings.AddSeparator()
+
+	// フォルダ設定
 	mVRCLogDir := mSettings.AddSubMenuItem("ログフォルダを指定", "VRChatのログフォルダを指定します")
 	mVRCPhotoDir := mSettings.AddSubMenuItem("写真フォルダを指定", "VRChatの写真フォルダを指定します")
-	mConvertToJpeg := mSettings.AddSubMenuItemCheckbox("JPEGに変換", "写真をJPEGに変換します。ついでに撮影日時なども書き込みます", a.config.ConvertToJpeg)
-	mAbout := systray.AddMenuItem("アプリについて", "アプリの配布ページを開きます")
+	mSettings.AddSeparator()
 
+	// mementoの設定ディレクトリを開く
+	mOpenConfigDir := mSettings.AddSubMenuItem("設定フォルダを開く", "mementoの設定フォルダを開きます")
+
+	// その他
+	mAbout := systray.AddMenuItem("アプリについて", "アプリの配布ページを開きます")
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("終了", "アプリを終了する")
 
@@ -42,6 +53,8 @@ func (a *App) setupMenu() {
 			case <-mConvertToJpeg.ClickedCh:
 				a.UpdateConvertToJpeg()
 				toggleConvertToJpeg()
+			case <-mOpenConfigDir.ClickedCh:
+				browser.OpenURL(a.config.ConfigDirPath)
 
 			case <-mQuit.ClickedCh:
 				systray.Quit()
