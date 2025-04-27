@@ -1,4 +1,5 @@
 .DS_Store
 dist/
+rsrc_windows*.syso
 *.exe
 memento
