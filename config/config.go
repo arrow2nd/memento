@@ -15,17 +15,16 @@ type Config struct {
 	PictureDirPath string
 	// VRCLogDirPath: VRChatのログディレクトリのパス
 	VRCLogDirPath string
+	// ConvertToJpeg: JPEGに変換するかどうか
+	ConvertToJpeg bool
+	// JpegQuality: JPEGの品質設定 (1-100)
+	JpegQuality int
 
 	configPath string
 }
 
 // New: 作成
 func New(appName string) (*Config, error) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, fmt.Errorf("ホームディレクトリの取得に失敗: %w", err)
-	}
-
 	configDir, err := os.UserConfigDir()
 	if err != nil {
 		return nil, fmt.Errorf("Configディレクトリの取得に失敗: %w", err)
@@ -34,20 +33,31 @@ func New(appName string) (*Config, error) {
 	configPath := filepath.Join(configDir, appName, configFileName)
 	log.Println("設定ファイル:", configPath)
 
+	config, err := getDefaultConfig()
+	if err != nil {
+		return nil, fmt.Errorf("デフォルト設定の取得に失敗: %w", err)
+	}
+
 	// 設定ファイルがあれば読み込む
 	if _, err := os.Stat(configPath); err == nil {
 		return load(configPath)
 	}
 
-	// デフォルト値を設定
-	config := &Config{
-		PictureDirPath: getDefaultWatchDirPath(homeDir),
-		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
-		configPath:     configPath,
+	return config, config.Save()
+}
+
+func getDefaultConfig() (*Config, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("ホームディレクトリの取得に失敗: %w", err)
 	}
 
-	// 保存
-	return config, config.Save()
+	return &Config{
+		PictureDirPath: getDefaultWatchDirPath(homeDir),
+		VRCLogDirPath:  getDefaultVRCLogDirPath(homeDir),
+		ConvertToJpeg:  true,
+		JpegQuality:    90,
+	}, nil
 }
 
 func getDefaultWatchDirPath(baseDir string) string {

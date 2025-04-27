@@ -14,14 +14,19 @@ func load(configPath string) (*Config, error) {
 		return nil, fmt.Errorf("設定ファイルの読み込みに失敗: %w", err)
 	}
 
-	var config Config
+	// デフォルト設定
+	config, err := getDefaultConfig()
+	if err != nil {
+		return nil, fmt.Errorf("デフォルト設定の取得に失敗: %w", err)
+	}
+
 	if err := json.Unmarshal(buf, &config); err != nil {
 		return nil, fmt.Errorf("設定ファイルのデコードに失敗: %w", err)
 	}
 
 	config.configPath = configPath
 
-	return &config, nil
+	return config, nil
 }
 
 // Save: 設定を保存する
@@ -70,5 +75,24 @@ func (c *Config) SetRootDirPath(path string) error {
 // SetVRCLogDirPath: VRChatのログディレクトリのパスを設定
 func (c *Config) SetVRCLogDirPath(path string) error {
 	c.VRCLogDirPath = path
+	return c.Save()
+}
+
+// SetConvertToJpeg: JPEG変換の設定を変更
+func (c *Config) SetConvertToJpeg(convert bool) error {
+	c.ConvertToJpeg = convert
+	return c.Save()
+}
+
+// SetJpegQuality: JPEG品質の設定を変更
+func (c *Config) SetJpegQuality(quality int) error {
+	// 品質は1-100の範囲内に制限
+	if quality < 1 {
+		quality = 1
+	} else if quality > 100 {
+		quality = 100
+	}
+
+	c.JpegQuality = quality
 	return c.Save()
 }
