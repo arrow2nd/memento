@@ -65,7 +65,9 @@ func (a *App) setupMenu() {
 
 // UpdateVRCLogDir: VRChatのログフォルダを選択して更新する
 func (a *App) UpdateVRCLogDir() {
-	dir, err := dialog.Directory().SetStartDir(a.config.VRCLogDirPath).Title("VRChatのログフォルダを指定").Browse()
+	title := "VRChatのログフォルダを指定してください。\n\"output_log_なんとか.txt\" みたいなファイルが置いてあるフォルダです。"
+
+	dir, err := dialog.Directory().SetStartDir(a.config.VRCLogDirPath).Title(title).Browse()
 	if err != nil {
 		log.Println("ログフォルダの選択に失敗:", err)
 		return
@@ -81,7 +83,9 @@ func (a *App) UpdateVRCLogDir() {
 
 // UpdateVRCPictureDir: VRChatの写真フォルダを選択して更新する
 func (a *App) UpdateVRCPictureDir() bool {
-	dir, err := dialog.Directory().SetStartDir(a.config.PictureDirPath).Title("VRChatの写真フォルダを指定").Browse()
+	title := "VRChatの写真フォルダを指定してください。\n\"2025-04\" みたいなフォルダではなく、その1つ上のフォルダです。(たぶん \"VRChat\" って名前のはず)"
+
+	dir, err := dialog.Directory().SetStartDir(a.config.PictureDirPath).Title(title).Browse()
 	if err != nil {
 		log.Println("写真フォルダの選択に失敗:", err)
 		return false
