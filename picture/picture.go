@@ -42,8 +42,8 @@ func MoveToWorldNameDir(opts MoveToWorldNameDirOpts, convertToJpeg bool, jpegQua
 	safeWorldName := convertToSafeDirectoryName(opts.WorldVisit.Name)
 	worldDirPath := filepath.Join(opts.TargetDirPath, safeWorldName)
 
-	if convertToJpeg {
-		// 設定が有効ならJPEGに変換
+	// 設定が有効かつ、マルチレイヤーの写真でない場合はJPEGに変換
+	if convertToJpeg && !isMultiLayerPicture(opts.PicturePath) {
 		if _, err := encodeJpegWithExif(opts.PicturePath, worldDirPath, opts.WorldVisit.Name, takePictureTime, jpegQuality); err != nil {
 			return fmt.Errorf("ファイルの移動に失敗: %w", err)
 		}
