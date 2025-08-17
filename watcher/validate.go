@@ -3,7 +3,6 @@ package watcher
 import (
 	"log"
 	"path/filepath"
-	"strings"
 )
 
 // isCurrentMonthDir: 現在の年月のディレクトリかどうかを判定
