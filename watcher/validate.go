@@ -3,6 +3,7 @@ package watcher
 import (
 	"log"
 	"path/filepath"
+	"strings"
 )
 
 // isCurrentMonthDir: 現在の年月のディレクトリかどうかを判定
@@ -24,7 +25,15 @@ func (w *Watcher) isVRCPicture(path string) bool {
 		return false
 	}
 
+	filename := filepath.Base(path)
 	ext := filepath.Ext(path)
 
+	// マルチレイヤーの写真なら無視
+	if name := strings.TrimSuffix(filename, ext); strings.HasSuffix(name, "_Environment") || strings.HasSuffix(name, "_Player") {
+		log.Println("マルチレイヤーの写真なのでスキップ:", filename)
+		return false
+	}
+
+	// 拡張子をチェック
 	return ext == ".png" || ext == ".jpg"
 }
