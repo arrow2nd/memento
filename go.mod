@@ -7,7 +7,7 @@ require (
 	github.com/dsoprea/go-exif/v3 v3.0.1
 	github.com/dsoprea/go-jpeg-image-structure/v2 v2.0.0-20221012074422-4f3f7e934102
 	github.com/fsnotify/fsnotify v1.9.0
-	github.com/gofrs/flock v0.12.1
+	github.com/gofrs/flock v0.13.0
 	github.com/sqweek/dialog v0.0.0-20240226140203-065105509627
 )
 
@@ -32,5 +32,5 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
-	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/sys v0.37.0
 )
