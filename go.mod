@@ -32,5 +32,5 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
-	golang.org/x/sys v0.38.0
+	golang.org/x/sys v0.39.0
 )
