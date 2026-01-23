@@ -8,7 +8,7 @@ require (
 	github.com/dsoprea/go-jpeg-image-structure/v2 v2.0.0-20221012074422-4f3f7e934102
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/gofrs/flock v0.13.0
-	github.com/sqweek/dialog v0.0.0-20240226140203-065105509627
+	github.com/sqweek/dialog v0.0.0-20260123140253-64c163d53aac
 )
 
 require (
