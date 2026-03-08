@@ -1,6 +1,6 @@
 module github.com/arrow2nd/memento
 
-go 1.24.2
+go 1.25.0
 
 require (
 	fyne.io/systray v1.12.0
@@ -32,5 +32,5 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
-	golang.org/x/sys v0.41.0
+	golang.org/x/sys v0.42.0
 )
