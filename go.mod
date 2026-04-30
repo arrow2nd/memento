@@ -3,7 +3,7 @@ module github.com/arrow2nd/memento
 go 1.25.0
 
 require (
-	fyne.io/systray v1.12.0
+	fyne.io/systray v1.12.1
 	github.com/dsoprea/go-exif/v3 v3.0.1
 	github.com/dsoprea/go-jpeg-image-structure/v2 v2.0.0-20221012074422-4f3f7e934102
 	github.com/fsnotify/fsnotify v1.9.0
