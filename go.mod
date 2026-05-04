@@ -6,7 +6,7 @@ require (
 	fyne.io/systray v1.12.0
 	github.com/dsoprea/go-exif/v3 v3.0.1
 	github.com/dsoprea/go-jpeg-image-structure/v2 v2.0.0-20221012074422-4f3f7e934102
-	github.com/fsnotify/fsnotify v1.9.0
+	github.com/fsnotify/fsnotify v1.10.1
 	github.com/gofrs/flock v0.13.0
 	github.com/sqweek/dialog v0.0.0-20260123140253-64c163d53aac
 )
