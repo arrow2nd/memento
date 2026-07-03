@@ -22,7 +22,7 @@ require (
 	github.com/golang/geo v0.0.0-20250425181934-8bbaf6e6a91f // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	golang.org/x/net v0.39.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
@@ -32,5 +32,5 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
-	golang.org/x/sys v0.43.0
+	golang.org/x/sys v0.45.0
 )
